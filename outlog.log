@@ -1,0 +1,26 @@
+'os' already in sys.modules
+'fasttext' already in sys.modules
+ents/GitHub/sentiment-analyser/models/uk.ftz
+Warning : `load_model` does not return WordVectorModel or SupervisedModel any more, but a `FastText` object which is very similar.
+<<fasttext.FastText._FastText object at 0x7fd29023cca0>> quantized model successfully loaded!
+
+Loading <ru.ftz> quantized model ...
+
+/Users/dmytrenko.o/Documents/GitHub/sentiment-analyser/models/ru.ftz
+Warning : `load_model` does not return WordVectorModel or SupervisedModel any more, but a `FastText` object which is very similar.
+<<fasttext.FastText._FastText object at 0x7fd290259eb0>> quantized model successfully loaded!
+
+Loading <en.ftz> quantized model ...
+
+/Users/dmytrenko.o/Documents/GitHub/sentiment-analyser/models/en.ftz
+Warning : `load_model` does not return WordVectorModel or SupervisedModel any more, but a `FastText` object which is very similar.
+<<fasttext.FastText._FastText object at 0x7fd290259a60>> quantized model successfully loaded!
+
+
+ ツ You are lucky! The program successfully finished!
+
+5.349141836166382
+'os' already in sys.modules
+'fasttext' has been imported
+'time' already in sys.modules
+'json' has been imported
