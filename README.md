@@ -58,4 +58,4 @@ To run the `sentiment_analyzer.py` script you will need:
 - to create the folder `Models` in the root folder, download and unpack there pre-trained models [**ukr_infostream_v2.ftz**](https://drive.google.com/file/d/1njXnzZF6A7Zv4BELJdgDE0cwZHZgQwtZ/view?usp=sharing), [**rus_infostream.ftz**](https://drive.google.com/file/d/1dW-3eyDXQvS4PFx9uPI9bXs7metFVsZ4/view?usp=sharing) and [**eng_infostream_v2.ftz**](https://drive.google.com/file/d/1ugBnDWHrzZV7AmejnS-OPoiGqrhy53Zn/view?usp=sharing) for Ukrainian, Russian and English language, accordingly
 
 ## Copyright
-Copyright © 2021 [Dmytro Lande](http://dwl.kiev.ua/), [Oleh Dmytrenko](http://odmytrenko.tilda.ws/)
+Copyright © 2021
