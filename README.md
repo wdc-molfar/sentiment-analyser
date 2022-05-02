@@ -1,19 +1,11 @@
-# Sentiment-analyser
+# Програмний модуль sentiment-analyser | Вступ
 
-**The program for sentiment analysis of text content.**
+**Модуль `sentiment-analyser` – "Програмний модуль виявлення емоційного забарвлення текстів інформаційних повідомлень поданих українською, російською та англійською мовами."**, який написаний мовою програмування `Python`, призначений для виявлення емоційного забарвлення текстів інформаційних повідомлень українською, російською чи англійською мовами за допомогою відповідних навчених засобами [fastText](https://github.com/facebookresearch/fastText) моделей.
 
-*Input data* are a text content, and a language of the text content (`ukr`, `rus` and `eng`).
-By default, the limit of prediction is 0.9.
+Для побудови моделей, які застосовуються у програмному модулі [sentiment-analyser](https://github.com/wdc-molfar/sentiment-analyser), було використано функціонал бібліотеки [fastText](https://github.com/facebookresearch/fastText) мови програмування `Python`. Для навчання класифікатора [fastText](https://github.com/facebookresearch/fastText) спочатку була здійснена попередня обробка й формування навчального збалансованого набору даних у вигляді текстових файлів [uk.txt](https://drive.google.com/file/d/1njXnzZF6A7Zv4BELJdgDE0cwZHZgQwtZ/view?usp=sharing), [ru.txt](https://drive.google.com/file/d/1dW-3eyDXQvS4PFx9uPI9bXs7metFVsZ4/view?usp=sharing), [en.txt](https://drive.google.com/file/d/1ugBnDWHrzZV7AmejnS-OPoiGqrhy53Zn/view?usp=sharing) що містить в кожному рядку навчальне речення разом з міткою, що розпочинаються з префікса `__label__` (`__label__good` чи `__label__bad` для маркування речень позитивної чи негативної тональності відповідно). 
 
-*Output data* is `Good` or `Bad` label that describe a emotion of input text content.
-In the case of an unexpectable language or a prediction is lower than 0.9 output data is `None`.
-
-## Models
-
-The program uses three pre-trained models ([**ukr_infostream_v2.ftz**](https://drive.google.com/file/d/1njXnzZF6A7Zv4BELJdgDE0cwZHZgQwtZ/view?usp=sharing), [**rus_infostream.ftz**](https://drive.google.com/file/d/1dW-3eyDXQvS4PFx9uPI9bXs7metFVsZ4/view?usp=sharing) and [**eng_infostream_v2.ftz**](https://drive.google.com/file/d/1ugBnDWHrzZV7AmejnS-OPoiGqrhy53Zn/view?usp=sharing) for Ukrainian, Russian and English language, accordingly) that ontained with applying an open-source Python library [FastText](https://fasttext.cc/).
-
-In order to train a text classifier using the [FastText](https://fasttext.cc/), the `fasttext.train_supervised` function with the following hyperparameters was used:
-
+Далі здійснюється процес навчання засобами [fastText](https://github.com/facebookresearch/fastText)(функція `fastText.train_supervised()`). Для навчання моделей були налаштовані наступні гіперпараметри: 
+``` python
 		hyper_params = { 
 			"lr": 0.35,         # Learning rate
 			"epoch": 100,       # Number of training epochs to train for
@@ -21,15 +13,17 @@ In order to train a text classifier using the [FastText](https://fasttext.cc/), 
 			"dim": 155,         # Size of word vectors
 			"ws": 5,            # Size of the context window for CBOW or skip-gram
 			"minn": 3,          # Min length of char ngram
-			"maxn": 20,          # Max length of char ngram
+			"maxn": 20,         # Max length of char ngram
 			"bucket": 2014846,  # Number of buckets
 			}
-		
-A  text file `traindata_lang.txt` contained a training sentence per line along with the labels prefixed by the string `__label__` (`__label__pos` or `__label__neg`) were used.
+```
+Кількість циклів навчання – 100, кількість слів у n-грамах – 3, розмірність вектора моделі – 155, розмір контекстного вікна – 5, найменша допустима кількість символів в слові – 3, найбільша – 20. В результаті для трьох різних наборів даних (для української, російської та англійської мови) були отримані відповідні три навчені моделі для сентимент аналізу екстів інформаційних повідомлень українською, російською чи англійською мовами, які після процедури квантування були збережені у файлах формату `.ftz`:
+- [uk.ftz](https://drive.google.com/file/d/1njXnzZF6A7Zv4BELJdgDE0cwZHZgQwtZ/view?usp=sharing) 
+- [ru.ftz](https://drive.google.com/file/d/1dW-3eyDXQvS4PFx9uPI9bXs7metFVsZ4/view?usp=sharing) 
+- [en.ftz](https://drive.google.com/file/d/1ugBnDWHrzZV7AmejnS-OPoiGqrhy53Zn/view?usp=sharing)
 
-In order to compress and have a much smaller model file and, as a result, reduce space usage, obtained models were quantized and saved in `.ftz` format.
-To quantize and compress model, the `quantize` function with the following parameters was used:
-
+Для одержання стиснених квантованих моделей був використаний метод `quantize` функціоналу [fastText](https://github.com/facebookresearch/fastText) з наступними параметрами квантування:
+``` python
 		model.quantize(
 			input=None,
 			qout=False,
@@ -42,20 +36,138 @@ To quantize and compress model, the `quantize` function with the following param
 			dsub=2,
 			qnorm=False,
 			)
+```
 
-- [**ukr_infostream_v2.ftz**](https://drive.google.com/file/d/1njXnzZF6A7Zv4BELJdgDE0cwZHZgQwtZ/view?usp=sharing) is model trained on the `traindata_ukr.txt` containing 260000 Ukrainian messages per line along with the `__label__pos` or `__label__neg` labels.
-- [**rus_infostream.ftz**](https://drive.google.com/file/d/1dW-3eyDXQvS4PFx9uPI9bXs7metFVsZ4/view?usp=sharing) is model trained on the `traindata_rus.txt` containing 260000 Russian messages per line along with the `__label__pos` or `__label__neg` labels.
-- [**eng_infostream_v2.ftz**](https://drive.google.com/file/d/1ugBnDWHrzZV7AmejnS-OPoiGqrhy53Zn/view?usp=sharing) is model trained on the `traindata_eng.txt` containing 300000 English messages per line along with the `__label__pos` or `__label__neg` labels.
+### Зміст
+- [Позначення та найменування програмного модуля](#name)
+- [Програмне забезпечення, необхідне для функціонування програмного модуля](#software)
+- [Функціональне призначення](#function)
+- [Опис логічної структури](#structure)
+- [Використовувані технічні засоби](#hardware)
+- [Виклик та завантаження](#run)
+- [Вхідні дані](#inputdata)
+- [Вихідні дані](#outputdata)
 
-The pre-labeled messages were obtained with the help of the news monitoring system - [InfoStream](http://infostream.ua/ENG/).
-Labels of these messages obtained as result of [dictionary-based classification](https://arxiv.org/abs/0806.2738).
-To collect the training data, the messages with extremely high emotional weights were selected. 
+<a name="name"></a>
+<h2>Позначення та найменування програмного модуля</h2>
 
-## Requirements
-To run the `sentiment_analyzer.py` script you will need:
-- python 3.8 or newer
-- to install [fastText-0.9.2](https://pypi.org/project/fasttext/)
-- to create the folder `Models` in the root folder, download and unpack there pre-trained models [**ukr_infostream_v2.ftz**](https://drive.google.com/file/d/1njXnzZF6A7Zv4BELJdgDE0cwZHZgQwtZ/view?usp=sharing), [**rus_infostream.ftz**](https://drive.google.com/file/d/1dW-3eyDXQvS4PFx9uPI9bXs7metFVsZ4/view?usp=sharing) and [**eng_infostream_v2.ftz**](https://drive.google.com/file/d/1ugBnDWHrzZV7AmejnS-OPoiGqrhy53Zn/view?usp=sharing) for Ukrainian, Russian and English language, accordingly
+Програмний модуль має позначення **"sentiment-analyser"**.
+
+Повне найменування програмного модуля – **"Програмний модуль виявлення емоційного забарвлення текстів інформаційних повідомлень поданих українською, російською та англійською мовами."**.
+
+<a name="software"></a>
+<h2>Програмне забезпечення, необхідне для функціонування програмного модуля</h2>
+
+Для функціонування програмного модуля, написаного мовою програмування `Python`, необхідне наступне програмне забезпечення:
+
+- `Docker` [v20.10](https://docs.docker.com/engine/release-notes/#version-2010)
+- `Kubernetes` [v1.22.4](https://github.com/kubernetes/kubernetes/releases/tag/v1.22.4)
+
+- `python` [v3.6.0](https://www.python.org/downloads/release/python-360/) or newer
+
+```sh
+python --version Python 3.6.0
+```
+
+пакети:
+- `fastText` [v9.0.2](https://github.com/facebookresearch/fastText)
+- `json` [v1.6.1](https://github.com/facebookresearch/fastText)
+
+```sh
+pip install fastText==9.0.2
+pip install jsons==1.6.1
+```
+
+Для функціонування програмного модуля також необхідно вивантажити та розпакувати у директорію `models` квантовані моделі:
+- [uk.ftz](https://drive.google.com/file/d/1njXnzZF6A7Zv4BELJdgDE0cwZHZgQwtZ/view?usp=sharing) — модель для сентимент аналізу (аналізу та виявлення емоційного забарвлення) українських текстів інформаційних повідомлень, що була навчена на тренувальний збалансованій вибірці [uk.txt]() із сумарно 26000 рядків позитивних та негативних інформаційних повідомлень розмічених відповідними мітками `__label__pos` чи `__label__neg` в кінці кожного рядка
+- [ru.ftz](https://drive.google.com/file/d/1dW-3eyDXQvS4PFx9uPI9bXs7metFVsZ4/view?usp=sharing) — модель для сентимент аналізу російських текстів інформаційних повідомлень, що була навчена на тренувальний збалансованій вибірці [ru.txt]() із сумарно 26000 рядків позитивних та негативних інформаційних повідомлень розмічених відповідними мітками `__label__pos` чи `__label__neg` в кінці кожного рядка
+- [en.ftz](https://drive.google.com/file/d/1ugBnDWHrzZV7AmejnS-OPoiGqrhy53Zn/view?usp=sharing) — модель для сентимент аналізу англійських текстів інформаційних повідомлень, що була навчена на тренувальний збалансованій вибірці [en.txt]() із сумарно 30000 рядків позитивних та негативних інформаційних повідомлень розмічених відповідними мітками `__label__pos` чи `__label__neg` в кінці кожного рядка
+
+<a name="function"></a>
+<h2>Функціональне призначення</h2>
+
+Програмний модуль `sentiment-analyser` призначений для виявлення емоційного забарвлення текстів інформаційних повідомлень українською, російською чи англійською мовами за допомогою відповідних навчених засобами [fastText](https://github.com/facebookresearch/fastText) моделей.
+
+<a name="structure"></a>
+<h2>Опис логічної структури</h2>
+
+Програмний модуль `sentiment-analyser` складається з частин:
+- `main.py` — головного скрипта, що викликає наступні підмодулі:
+	- `packagesInstaller.py` — підмодуль, що відповідає за перевірку та завантаження необхідних програмних бібліотек, модулів та підмодулів, і складається з наступних функцій:
+		- `setup_packeges()` — функції завантаження та установки необхідних для коректного функціонування програмного модуля **`sentiment-analyser`** бібліотек та пакетів
+	- `сonfigLoader.py` — підмодуль, що здійснює обробку файлу конфігурацій `config.json` і складається з наступних функцій:
+		- `load_default_languages()` — функції обробки поля з тегом `langModels` та присвоєння відповідних навчених моделей для сентимент аналізу (аналізу та виявлення емоційного забарвлення) текстів інформаційних повідомлень
+		- `default_int_value()` — функції обробки поля з тегом `predictLimit` та присвоєння мінімального порогового значення передбачення наймовірнішої мітки емоційного забарвлення
+	- `modelsLoader.py` — підмодуль, що призначений для завантаження навчених моделей сентимент аналізу, які визначені за замовчуванням для кожної із мов у файлі конфігурацій `config.json` або у списку мов за замовуванням (у випадку відсутності файла `config.json` чи виникнення проблем з його зчитуванням та обробкою), і містить наступні функції:
+		- `load_models()` — функцію завантаження навчених за допомогою засобів [fastText](https://github.com/facebookresearch/fastText) моделей для сентимент аналізу текстів інформаційних повідомлень. У випадку, коли список мов та відповідних їм моделей порожній, невизначений чи виникають проблеми зі зчитуванням та обробкою файла конфігурацій `config.json`, то використовується список моделей за замовчуванням, який містить українську, російську та англійську мови та відповідні назви моделей для сентимент аналізу
+		- `load_fasttext_model()` — функція безпосереднього завантаження конкретної навченої моделі [fastText](https://github.com/facebookresearch/fastText) ([uk.ftz](https://drive.google.com/file/d/1njXnzZF6A7Zv4BELJdgDE0cwZHZgQwtZ/view?usp=sharing) — української, [ru.ftz](https://drive.google.com/file/d/1dW-3eyDXQvS4PFx9uPI9bXs7metFVsZ4/view?usp=sharing) — російської чи [en.ftz](https://drive.google.com/file/d/1ugBnDWHrzZV7AmejnS-OPoiGqrhy53Zn/view?usp=sharing) — англійської)
+	- `sentimentAnalyser.py` — підмодуль, що відповідає за сентимент аналіз та виявлення емоційного забарвлення текстів інформаційних повідомлень, і містить наступну функцію:
+		- `predict_emotion()` — функцію безпосереднього передбачення емоціного забарвлення тексту відповідною попередньо завантаженою моделлю [fastText](https://github.com/facebookresearch/fastText) для сентимент аналізу
+
+У програмному модулі `sentiment-analyser` вивід результату роботи програми здійснюється у стандартний вихідний потік за допомогою команди `print`. Повідомлення про помилки та інші інформаційні сповіщення про результати роботи програмного модуля виводяться у `output.log`.
+
+Програмний модуль **`sentiment-analyser`** зчитує вхідне текстове інформаційне повідомлення та мову інформаційного повідомлення, далі за допомогою функції `load_models()` програмного підмодуля `modelsLoader.py` здійснює завантаження навчених моделей сентимент аналізу і в результаті опрацювання функцією `predict_emotion()` підмодуля `sentimentAnalyser.py` здійснює сентимент аналіз вхідного текстового повідомлення й вивід передбачення емоціного забарвлення тексту у вигляді мітки `Good` - для позитивного емоційного забарвлення, `Bad` - для негативного емоційного забарвлення та `None` - у випадку, коли ймовірність передбачення нижча за встановлений поріг `predictLimit = 0.9`.
+
+
+<a name="hardware"></a>
+<h2>Використовувані технічні засоби</h2>
+
+Програмний модуль експлуатується на сервері (або у хмарі серверів) під управлінням операційної системи типу `Linux` (64-х разрядна). В основі управління всіх сервісів є система оркестрації `Kubernetes`, де всі контейнери працюють з використанням `Docker`.
+
+
+<a name="run"></a>
+<h2>Виклик та завантаження</h2>
+
+Для серверів, які працюють під керівництвом операційних систем сімейства `Windows OS`, виклик програмного модуля **`sentiment-analyser`** здійснюється шляхом запуску скрипта `main.py` з використанням команди `python`. Потрібно відкрити командний рядок – термінал `shell` та написати `python main.py` з необхідними параметрами. Важливо, щоб скрипт знаходився або в директорії, з якої запущено командний рядок, або в каталозі, прописаному у змінній середовища `PATH`. 
+Тож завантаження програмного модуля забезпечується введенням в командному рядку повного імені завантажувальної програми з додатковими параметроми - текстом інформаційного повідомлення <text>, яке необхідно опрацювати; та мовою інформаційного повідомлення <lang>:
+```sh
+python main.py <text> <lang>
+```
+
+Для серверів, які працюють під керівництвом `Unix`-подібних операційних систем (наприклад, `Linux`) на початку скрипта `Python` у першому рядку має бути вказаний повний шлях до інтерпретатора:
+``` python
+#!/usr/bin/python3
+```
+або
+``` python
+#!/usr/bin/env python3
+```
+
+В результаті запуску скрипта `main.py` програмного модуля **`sentiment-analyser`**  здійснюється зчитування вхідного текстового інформаційного повідомлення <text> та його мови <lang>, які подаються у якості вхідних параметрів та здійснюється подальша його обробка й аналіз відповідною завантаженою моделлю для розпізнавання емоціного забарвлення текстів.
+
+За замовчуванням, дані, отримані в результаті застосування програмної системи, виводяться в стандартний вихідний потік. Також вивід може перенаправлятися із консолі у файл, який зберігаюється у вигляді `.txt` файла. Для цього використовується оператор `>`.
+Повна команда виглядає так:
+```sh
+python main.py fullpath/.../input.txt > output.txt
+```
+Тут `output.txt` – це текстовий файл, у який записується результат виконання скрипта.
+
+Операція може використовуватися як в операційній системі `Windows OS`, так і в `Unix`-подібних системах.
+Якщо файла, в який повинен вивестися результат, не існує – система створить його автоматично.
+При використанні оператора `>` вміст файлу, в який відображаються дані, повністю перезаписується. Якщо наявні дані потрібно зберегти, а нові дописати до існуючих, то використовується оператор `>>`:
+```sh
+python main.py fullpath/.../input.txt >> output.txt
+``` 
+
+<a name="inputdata"></a>
+<h2>Вхідні дані</h2>
+
+Формат вхідних даних - текстовий або рядковий - `string`.
+
+Вхідні текстові дані, інформаційне повідомленння та його мова, мають наступний вигляд:
+```txt
+Текст українською мовою, що в цьому прикладі має позитивне емоційне забарвлення. uk
+```
+
+<a name="inputdata"></a>
+<h2>Вихідні дані</h2>
+
+Формат вихідних даних - текстовий або рядковий - `string`.
+
+Вихідний потік має наступний вигляд:
+```txt
+Good
+```
 
 ## Copyright
-Copyright © 2021
+Copyright © 2022 [WDC-MOLFAR](https://github.com/wdc-molfar)
