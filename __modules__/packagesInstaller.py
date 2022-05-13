@@ -1,10 +1,7 @@
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Tue Feb 22 06:56:18 2022
-Edited on Sun Feb 26 22:04:35 2022
-Edited on Wed Mar  9 11:59:59 2022
-
-@author: Олег Дмитренко
+@author: dmytrenko.o
 """
 
 import sys

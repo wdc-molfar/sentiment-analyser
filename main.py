@@ -1,16 +1,18 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-The program for sentiment analysis of text content.
+Created on Thu May 12 18:43:37 2022
 
-Input data are a text content, and a language of the text content ("ukr", "rus" and "eng").
-By default, the limit of prediction is 0.9.
-
-Output data is "Good" or "Bad" label that describe a emotion of input text content.
-In the case of an unexpectable language or a prediction is lower than 0.9, output data is "None".
+@author: dmytrenko.o
 """
 
+import json
+import io
 import sys, os
+import warnings
+import traceback
+
+
 stdOutput = open("outlog.log", "w")
 sys.stderr = stdOutput
 sys.stdout = stdOutput
@@ -23,20 +25,40 @@ from __modules__ import configLoader, modelsLoader, sentimentAnalyser
 
 import time
 t0 = time.time()
+print ("Start running time: {0}".format(t0))
 
+#load languages by default
 langModels = configLoader.load_default_languages(os.getcwd())
+#load models by default
 models = modelsLoader.load_models(os.getcwd(), langModels)
 
-if __name__ == "__main__":
+warnings.filterwarnings("ignore", message=r"\[W033\]", category=UserWarning)
+input_stream = io.TextIOWrapper(sys.stdin.buffer, encoding='utf-8')
+
+if __name__=='__main__':
+    
+    input_json = None
+    for line in input_stream:
+        
+        # read json from stdin
+        input_json = json.loads(line)
         try:
-            text = sys.argv[1]
-            lang = sys.argv[2] #format of input languale is "uk", "ru" or "en"
-        except:
-            print ("¯\_(ツ)_/¯ Error input text data or language!")
-            #text = input()
-            #lang = input()
-    
-        sentimentAnalyser.predict_emotion(text, models[lang], configLoader.default_value(os.getcwd(), "predictLimit"))
-    
-print ("\n ツ You are lucky! The program successfully finished!\n")
-print (time.time() - t0)
+            output = input_json.copy()
+        except BaseException as ex:
+            ex_type, ex_value, ex_traceback = sys.exc_info()            
+            
+            output = {"error": ''}           
+            output['error'] += "Exception type : %s; \n" % ex_type.__name__
+            output['error'] += "Exception message : %s\n" %ex_value
+            output['error'] += "Exception traceback : %s\n" %"".join(traceback.TracebackException.from_exception(ex).format())
+        
+        text = input_json["service"]["scraper"]["message"]["text"]
+        lang = input_json["service"]["scraper"]["message"]["lang"]
+        
+        predict, emotion = sentimentAnalyser.predict_emotion(text, models[lang], configLoader.default_value(os.getcwd(), "predictLimit"))
+        output["service"]["scraper"]["message"]["pem"] = predict
+        output["service"]["scraper"]["message"]["em"] = emotion
+        
+        output_json = json.dumps(output, ensure_ascii=False).encode('utf-8')
+        sys.stdout.buffer.write(output_json)
+        
