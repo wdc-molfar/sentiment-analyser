@@ -1,8 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Fri Apr 29 12:52:08 2022
-
 @author: dmytrenko.o
 """
 import sys

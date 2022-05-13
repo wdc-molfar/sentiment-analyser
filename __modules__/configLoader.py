@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Config.json loader
+@author: dmytrenko.o
 """
 import os
 from __modules__ import packagesInstaller
