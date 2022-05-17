@@ -4,13 +4,10 @@
 @author: dmytrenko.o
 """
 import sys
-stdOutput = open("outlog.log", "w")
-sys.stderr = stdOutput
-sys.stdout = stdOutput
 
-from __modules__ import packagesInstaller
-packages = ['os', 'fasttext']
-packagesInstaller.setup_packeges(packages)
+#from __modules__ import packagesInstaller
+#packages = ['os', 'fasttext']
+#packagesInstaller.setup_packeges(packages)
 
 import os
 import fasttext
@@ -26,6 +23,9 @@ def load_fasttext_model(modelsDir, model):
     return model
        
 def load_models(modelsDir, langModels):
+    stdOutput = open("outlog.log", "w")
+    sys.stderr = stdOutput
+    sys.stdout = stdOutput
     models = dict()
     for lang in langModels.keys():
         models[lang] = load_fasttext_model(modelsDir,langModels[lang])
