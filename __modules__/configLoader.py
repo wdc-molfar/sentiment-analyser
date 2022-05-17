@@ -4,9 +4,9 @@
 @author: dmytrenko.o
 """
 import os
-from __modules__ import packagesInstaller
-packages = ['json']
-packagesInstaller.setup_packeges(packages)
+#from __modules__ import packagesInstaller
+#packages = ['json']
+#packagesInstaller.setup_packeges(packages)
 
 import json
 

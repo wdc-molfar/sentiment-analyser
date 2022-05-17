@@ -4,10 +4,10 @@
 @author: dmytrenko.o
 """
 
-import sys
-stdOutput = open("outlog.log", "w")
-sys.stderr = stdOutput
-sys.stdout = stdOutput
+#import sys
+#stdOutput = open("outlog.log", "w")
+#sys.stderr = stdOutput
+#sys.stdout = stdOutput
 
 def predict_emotion(text, model, predictLimit):
     try:
