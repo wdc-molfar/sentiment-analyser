@@ -67,4 +67,5 @@ if __name__=='__main__':
         
         output_json = json.dumps(output, ensure_ascii=False).encode('utf-8')
         sys.stdout.buffer.write(output_json)
+        print ()
         
