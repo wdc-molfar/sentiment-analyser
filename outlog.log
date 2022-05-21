@@ -2,17 +2,17 @@ Loading <uk.ftz> quantized model ...
 
 /Users/dmytrenko.o/Documents/GitHub/MOLFAR/sentiment-analyser/models/uk.ftz
 Warning : `load_model` does not return WordVectorModel or SupervisedModel any more, but a `FastText` object which is very similar.
-<<fasttext.FastText._FastText object at 0x7fdf381ba940>> quantized model successfully loaded!
+¯\_(ツ)_/¯ <uk.ftz> quantized model can't be loaded!
 
 Loading <ru.ftz> quantized model ...
 
 /Users/dmytrenko.o/Documents/GitHub/MOLFAR/sentiment-analyser/models/ru.ftz
 Warning : `load_model` does not return WordVectorModel or SupervisedModel any more, but a `FastText` object which is very similar.
-<<fasttext.FastText._FastText object at 0x7fdf381ba8e0>> quantized model successfully loaded!
+¯\_(ツ)_/¯ <ru.ftz> quantized model can't be loaded!
 
 Loading <en.ftz> quantized model ...
 
 /Users/dmytrenko.o/Documents/GitHub/MOLFAR/sentiment-analyser/models/en.ftz
 Warning : `load_model` does not return WordVectorModel or SupervisedModel any more, but a `FastText` object which is very similar.
-<<fasttext.FastText._FastText object at 0x7fdf48161eb0>> quantized model successfully loaded!
+¯\_(ツ)_/¯ <en.ftz> quantized model can't be loaded!
 
