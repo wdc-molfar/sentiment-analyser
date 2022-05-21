@@ -1,8 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Thu May 12 18:43:37 2022
-
 @author: dmytrenko.o
 """
 
@@ -52,20 +50,21 @@ if __name__=='__main__':
             output['error'] += "Exception message : %s\n" %ex_value
             output['error'] += "Exception traceback : %s\n" %"".join(traceback.TracebackException.from_exception(ex).format())
         
-        try:
-            predict, emotion = sentimentAnalyser.predict_emotion(text, models[lang], configLoader.default_value(os.getcwd(), "predictLimit"))
-            output["service"]["scraper"]["message"]["pem"] = predict
-            output["service"]["scraper"]["message"]["em"] = emotion
-        except BaseException as ex:
-             ex_type, ex_value, ex_traceback = sys.exc_info()            
+        if lang in langModels:
+            try:
+                prediction = sentimentAnalyser.predict_emotion(text, models[lang], configLoader.default_value(os.getcwd(), "predictLimit"))
+                
+                output["service"]["sentimentanalyser"] = str(prediction)
+            except BaseException as ex:
+                 ex_type, ex_value, ex_traceback = sys.exc_info()            
+                 
+                 output = {"error": ''}           
+                 output['error'] += "Exception type : %s; \n" % ex_type.__name__
+                 output['error'] += "Exception message : %s\n" %ex_value
+                 output['error'] += "Exception traceback : %s\n" %"".join(traceback.TracebackException.from_exception(ex).format())
              
-             output = {"error": ''}           
-             output['error'] += "Exception type : %s; \n" % ex_type.__name__
-             output['error'] += "Exception message : %s\n" %ex_value
-             output['error'] += "Exception traceback : %s\n" %"".join(traceback.TracebackException.from_exception(ex).format())
-         
-        
-        output_json = json.dumps(output, ensure_ascii=False).encode('utf-8')
-        sys.stdout.buffer.write(output_json)
-        print ()
+            
+            output_json = json.dumps(output, ensure_ascii=False).encode('utf-8')
+            sys.stdout.buffer.write(output_json)
+            print ()
         

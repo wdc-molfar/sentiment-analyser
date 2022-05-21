@@ -18,8 +18,11 @@ def predict_emotion(text, model, predictLimit):
             emotion = "Bad"
         else:
             emotion = "None"
+        prediction = dict()
+        prediction["pos"] = float(predict[1][0])
+        prediction["neg"] = float(predict[1][1])
+        prediction["em"] = emotion
     except:
-        emotion = "None"
         print ("¯\_(ツ)_/¯ Unexpectable Error while emotion predicting!")  
         pass
-    return str(predict), emotion
+    return prediction
